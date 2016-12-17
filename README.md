@@ -2,5 +2,7 @@
 
 Change node parameters in config.php
 
+Import sql dump to your database.
+
 Start parsing with command:
-php parser.php
+> php parser.php
