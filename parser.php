@@ -15,8 +15,12 @@ include (MAIN_DIR . "/classSimpleImage.php");
 $parser = new Parser();
 
 do{
-    $parser->init();
-}while(1);
+    try{
+        $parser->init();
+    } catch (Exception $e){
+        echo 'ERROR: ' . $e;
+    }
+} while(1);
 
 class Parser{
     
@@ -32,30 +36,30 @@ public function init(){
 
     $num_in_sql = $this->get_num_current_block_from_sql();
     $num_in_blockchain = $this -> get_num_current_block();
-
-    echo ("START from block # " . $num_in_sql .", " .  $config['blockchain']['name'] . "blockchain");    
-    
-
+   
                for ($num_in_sql; $num_in_sql<$num_in_blockchain; $num_in_sql++){
                     $transactions = $this->get_content_from_block($num_in_sql);
                     if (empty($transactions)){
                         $db->query("UPDATE current_blocks SET id= " . $num_in_sql . " WHERE blockchain = '" . $config['blockchain']['name'] . "'");
+                        echo 'block #' . $num_in_sql . '->' . $num_in_blockchain . " \n ";
+             
                         continue;
                   }
-              foreach ($transactions as $tr){
+             if ( $num_in_sql < $num_in_blockchain - 1 ){
+               foreach ($transactions as $tr){
                  foreach ($tr['operations'] as $action){
 
                     if ($action[0] == "vote") { 
                         $answer_upvote = $this->add_vote_to_sql($action[1]['permlink'], $action[1]['author']);
                         $answer_voters = $this->update_voters_in_sql($action[1]['permlink'], $action[1]['voter']);
-                        echo ("block #" . $num_in_sql . ", action: VOTE" .  $answer_upvote ." \n"); 
+                        echo ("block #" . $num_in_blockchain . ", action: VOTE" .  $answer_upvote ." \n"); 
                     }
 
 
                     else if ($action[0]== "account_create"){
 
                        $answer = $this->add_account_to_sql($action[1]);
-                       echo ("block #" . $num_in_sql . ", action: NEW ACCOUNT, username= " .  $answer ." \n"); 
+                       echo ("block #" . $num_in_blockchain . ", action: NEW ACCOUNT, username= " .  $answer ." \n"); 
 
                    }
 
@@ -69,15 +73,15 @@ public function init(){
 
                                     $answer = $this->add_article_to_sql($action[1], $json);
                                     $this->download_images($action[1]['permlink'], $json['image'][0]);  //загружаем только первую картинку
-                                    echo ("block #" . $num_in_sql . ", action: ART, " . $answer . " \n");
+                                    echo ("block #" . $num_in_blockchain . ", action: ART, " . $answer . " \n");
 
                                     } else { //if not '' - that mean it is reply
                                     $answer = $this->add_replie_to_sql($action[1], $json);
-                                    echo ("block #" . $num_in_sql . ', action: REPLY, ' . $answer . " \n");
+                                    echo ("block #" . $num_in_blockchain . ', action: REPLY, ' . $answer . " \n");
 
                                 }
                             } else {
-                                echo ("block #" . $num_in_sql . ", action: Art or Reply, permlink =" . $action[1]['permlink'] . ", " . $answer . " \n");
+                                echo ("block #" . $num_in_blockchain . ", action: Art or Reply, permlink =" . $action[1]['permlink'] . ", " . $answer . " \n");
                             }
                         }
 
@@ -85,9 +89,11 @@ public function init(){
                  }
 
               }
+            }
             $db->query("UPDATE current_blocks SET id= " . $num_in_sql . " WHERE blockchain= '" . $config['blockchain']['name'] . "'");
-            echo 'block #' . $num_in_sql . " \n";
-            }   
+                echo 'block #' . $num_in_sql . '->' . $num_in_blockchain . " \n ";
+            } 
+  
 }     
  
 
@@ -336,7 +342,7 @@ public function init(){
         global $db;
         global $config;
       
-        $db->query("UPDATE art SET replies=replies+1 WHERE permlink=?s AND blockchain=?s", $root_link, $config['blockchain']['node']);
+        $db->query("UPDATE art SET replies=replies+1 WHERE permlink=?s AND blockchain=?s", $root_link, $config['blockchain']['name']);
         
         return "Comment count for article success updated";
                        
