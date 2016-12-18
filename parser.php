@@ -336,7 +336,7 @@ public function init(){
         global $db;
         global $config;
       
-        $db->query("UPDATE art SET replies=replies + 1 WHERE permlink=?s AND blockchain=?s", $root_link, $config['blockchain']['node']);
+        $db->query("UPDATE art SET replies=replies+1 WHERE permlink=?s AND blockchain=?s", $root_link, $config['blockchain']['node']);
         
         return "Comment count for article success updated";
                        
