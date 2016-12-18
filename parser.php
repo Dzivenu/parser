@@ -27,7 +27,7 @@ public function init(){
 
     $looking_for_tag= "ru--golos";    
 
-    $db = new SafeMysql(array('user' => $config['dbuser'], 'pass' => $config['dbpassword'],'db' => $config['dbname'], 'charset' => 'utf8mb4'));
+    $db = new SafeMysql(array('user' => $config['dbuser'], 'pass' => $config['dbpassword'],'db' => $config['dbname'],'host' => $config['dbhost'], 'charset' => 'utf8mb4'));
 
 
     $num_in_sql = $this->get_num_current_block_from_sql();
