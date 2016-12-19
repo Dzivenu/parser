@@ -10,7 +10,9 @@ date_default_timezone_set ("UTC");
 define ("MAIN_DIR", dirname(__FILE__));
 include ( MAIN_DIR . '/mysql.php');
 include (MAIN_DIR . "/config.php");
-include (MAIN_DIR . "/classSimpleImage.php");
+
+
+
 
 $parser = new Parser();
 
@@ -72,16 +74,17 @@ public function init(){
                                 if ($action[1]['parent_author'] == '') {   //check parent author - '', that mean it is article
 
                                     $answer = $this->add_article_to_sql($action[1], $json);
-                                    $this->download_images($action[1]['permlink'], $json['image'][0]);  //загружаем только первую картинку
-                                    echo ("block #" . $num_in_blockchain . ", action: ART, " . $answer . " \n");
-
+                                    if (array_key_exists('image', $json)&&(array_key_exists('0', $json['image']))){
+                                        $this->download_images($action[1]['permlink'], $action[1]['author'], $json['image'][0]);  //загружаем только первую картинку
+                                        echo "block #" . $num_in_blockchain . ", action: ART, " . $answer . " \n";
+                                    }
                                     } else { //if not '' - that mean it is reply
                                     $answer = $this->add_replie_to_sql($action[1], $json);
-                                    echo ("block #" . $num_in_blockchain . ', action: REPLY, ' . $answer . " \n");
+                                    echo "block #" . $num_in_blockchain . ', action: REPLY, ' . $answer . " \n";
 
                                 }
                             } else {
-                                echo ("block #" . $num_in_blockchain . ", action: Art or Reply, permlink =" . $action[1]['permlink'] . ", " . $answer . " \n");
+                                echo "block #" . $num_in_blockchain . ", action: Art or Reply, permlink =" . $action[1]['permlink'] . ", " . $answer . " \n";
                             }
                         }
 
@@ -549,23 +552,15 @@ private function need_update($data, $category){
 
 
 
-public function download_images($permlink, $image_link){
-   try{
-
-            $image = new SimpleImage();
-            $filename = basename($image_link); 
-            $path = '../storage/web/thumbs/' . $permlink . '-' . $filename;
-
-            file_put_contents($path, file_get_contents($image_link));
-
-            $image->load('../storage/web/thumbs/' . $permlink . '-' . $filename);
-            $image->resizeToWidth(120);
-            $image->save('../storage/web/thumbs/' . $permlink . '-' . $filename);
-
-        } catch (Exception $e) {
-          
+    public function download_images($permlink, $author, $image_link){
+        global $config;
+        
+                $arr = array ('author' => $author, 'permlink' => $permlink, 'link' => $image_link);
+                $arr = json_encode($arr);
+                $f = fopen("../storage/web/" . $config['blockchain']['name'] . '.txt', "a");
+                fwrite($f, $arr . " \n");
+                fclose($f); 
         }
-    }
 
 
 
