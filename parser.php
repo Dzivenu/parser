@@ -384,10 +384,21 @@ public function init(){
         if (is_array($json)&&(isset($json['tags'][0]))){
             if (is_array($json['tags'])) {
                 if (array_key_exists('0', $json['tags'])){
-                    if ($json['tags'][0] != $looking_for_tag) { //CHANGE TO == !!!! THAT MEAN WE LOOKING FOR ONE TAG. For test mode it is !=
+                    if ($json['tags'][0] == $looking_for_tag) { //CHANGE TO == !!!! THAT MEAN WE LOOKING FOR ONE TAG. For test mode it is !=
+                       if (array_key_exists('app', $json)){
+                           if ($json['app'] == 'mapala'){
+                            return true; 
                 
-                        return true; 
-                
+                           } else {
+                               
+                               return "This is not Mapala app";
+                           }
+                       } else {
+                           
+                               return "This is not Mapala app";
+                           
+                       }
+                        
                     } else {
                     
                         return "tags not contains keyword";
@@ -557,7 +568,7 @@ private function need_update($data, $category){
         
                 $arr = array ('author' => $author, 'permlink' => $permlink, 'link' => $image_link);
                 $arr = json_encode($arr);
-                $f = fopen("../storage/web/" . $config['blockchain']['name'] . '.txt', "a");
+                $f = fopen($config['base_path'] . $config['blockchain']['name'] . '.txt', "a");
                 fwrite($f, $arr . " \n");
                 fclose($f); 
         }

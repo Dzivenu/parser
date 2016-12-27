@@ -3,6 +3,7 @@
 <?php 
 
 $config = array (
+  'base_path' => "../storage/web/",
   'entity' => '2520b329',
   'relatedTo' => 'common\models\Art:',
   'status' => '1',
@@ -14,7 +15,7 @@ $config = array (
   'name' => 'golos',
   'node' => '127.0.0.1:8090',
   'currency' => 'SBD',
-  'start_block' => '1611135', //use 'current' for production.
+  'start_block' => '1731426', //use 'current' for production.
    
   )
 );
