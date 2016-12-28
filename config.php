@@ -4,6 +4,8 @@
 
 $config = array (
   'base_path' => "../storage/web/",
+  'base_path_for_img' => "../storage/web/",
+  
   'entity' => '2520b329',
   'relatedTo' => 'common\models\Art:',
   'status' => '1',

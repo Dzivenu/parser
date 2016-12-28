@@ -12,7 +12,7 @@ include (MAIN_DIR . "/config.php");
 
                      
                 $image = new SimpleImage();
-                $base_dir = "../storage/web/";
+                $base_dir = $config['base_path_for_img'];
                 $file_dir = $base_dir . $config['blockchain']['name'] . '.txt';
                 $file = file($file_dir);
                 file_put_contents($file_dir, '');

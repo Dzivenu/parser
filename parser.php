@@ -207,13 +207,17 @@ public function init(){
         if (is_null($exist_art)) {
             
           $db->query("INSERT INTO art SET ?u", $data);
-          if(array_key_exists('0', $json['tags'])&&($json['tags'][0] != $looking_for_tag)){
+          if(array_key_exists('0', $json['tags'])&&($json['tags'][0] == $looking_for_tag)){
               $this->update_category($data['country'], $data['city'], $data['category'], $data['sub_category']);
           }
               return ("article by " . $data['author'] . "category: " . $json['tags'][0] . ", permlink: " . $data['permlink'] . " ADDED");
                 
             
         } else {
+            unset($data['created_at']);
+            unset($data['voters']);
+            unset($data['replies']);
+            unset($data['votes']);
             
             $db->query("UPDATE art SET ?u WHERE permlink=?s", $data, $data['permlink']);
             return ("article by " . $data['author'] . "category: " . $json['tags'][0] . ", permlink: " . $data['permlink'] .  " UPDATED");

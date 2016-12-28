@@ -10,7 +10,7 @@ date_default_timezone_set ("UTC");
 include ('mysql.php');
 include ("config.php");
 
-$db = new SafeMysql(array('user' => $config['dbuser'], 'pass' => $config['dbpassword'],'db' => $config['dbname'], 'charset' => 'utf8mb4'));
+$db = new SafeMysql(array('user' => $config['dbuser'], 'pass' => $config['dbpassword'],'db' => $config['dbname'], 'host' => $config['dbhost'], 'charset' => 'utf8mb4'));
 
   $cmd = "curl -s http://data-asg.goldprice.org/GetData/RUB-XAU/1";
   $out = shell_exec($cmd);  
