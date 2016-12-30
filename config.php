@@ -3,6 +3,7 @@
 <?php 
 
 $config = array (
+  'sign_check' => true,
   'key' => '',
   'search_tag' => 'ru--golos',
   'entity' => '2520b329',

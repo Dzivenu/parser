@@ -388,8 +388,8 @@ public function init(){
         if (is_array($json)&&(isset($json['tags'][0]))){
 
             if ((array_key_exists('sign', $json))){
-                $sign = $this->mc_decrypt($json['sign']);
-                if ((is_array($sign)&&(array_key_exists('sign', $sign)&&($sign['sign'] == true)))){
+               ($config['check_sign'] == true) ? $sign = $this->mc_decrypt($json['sign']) : "";
+                if ((is_array($sign)&&(array_key_exists('sign_flag', $sign)&&($sign['sign_flag'] == true)))||($config['check_sign'] == false)){
 
 
                     if (is_array($json['tags'])) {
