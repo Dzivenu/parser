@@ -384,34 +384,35 @@ public function init(){
              
    private function validate_tags($json){
        global $looking_for_tag;
-       global $config;
+       
         if (is_array($json)&&(isset($json['tags'][0]))){
+
+ 
                 if (is_array($json['tags'])) {
-                        if (array_key_exists('0', $json['tags'])){
-                            if ($json['tags'][0] == $looking_for_tag) { //CHANGE TO == !!!! THAT MEAN WE LOOKING FOR ONE TAG. For test mode it is !=
+                    if (array_key_exists('0', $json['tags'])){
+                        if ($json['tags'][0] == $looking_for_tag) { //CHANGE TO == !!!! THAT MEAN WE LOOKING FOR ONE TAG. For test mode it is !=
 
-                                return true; 
+                            return true; 
 
-                            } else {
+                        } else {
 
-                                return "tags not contains keyword";
-
-                            }
-
-                        } else{
-                            return "wrong key in tag array";
+                            return "tags not contains keyword";
 
                         }
 
-                    } else {
-                        return "tags is not array";
+                    } else{
+                        return "wrong key in tag array";
+
                     }
-                
+
+                }else {
+                    return "tags is not array";
+                }
+            
         } else{
                return "tags not setted";
         }
-   } 
-           
+   }         
     
     
   
