@@ -387,28 +387,35 @@ public function init(){
        
         if (is_array($json)&&(isset($json['tags'][0]))){
 
-            if ((array_key_exists('sign', $json))&&($this->mc_decrypt($json['sign']) == 'true')){
- 
-                if (is_array($json['tags'])) {
-                    if (array_key_exists('0', $json['tags'])){
-                        if ($json['tags'][0] == $looking_for_tag) { //CHANGE TO == !!!! THAT MEAN WE LOOKING FOR ONE TAG. For test mode it is !=
+            if ((array_key_exists('sign', $json))){
+                $sign = $this->mc_decrypt($json['sign']);
+                if ((is_array($sign)&&(array_key_exists('sign', $sign)&&($sign['sign'] == true)))){
 
-                            return true; 
 
-                        } else {
+                    if (is_array($json['tags'])) {
+                        if (array_key_exists('0', $json['tags'])){
+                            if ($json['tags'][0] == $looking_for_tag) { //CHANGE TO == !!!! THAT MEAN WE LOOKING FOR ONE TAG. For test mode it is !=
 
-                            return "tags not contains keyword";
+                                return true; 
+
+                            } else {
+
+                                return "tags not contains keyword";
+
+                            }
+
+                        } else{
+                            return "wrong key in tag array";
 
                         }
 
-                    } else{
-                        return "wrong key in tag array";
-
+                    } else {
+                        return "tags is not array";
                     }
-
-                }else {
-                    return "tags is not array";
+                }   else {
+                return "SIGN check error";
                 }
+                
             }   else {
                 return "SIGN check error";
             }
