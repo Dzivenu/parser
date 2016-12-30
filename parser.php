@@ -384,7 +384,7 @@ public function init(){
              
    private function validate_tags($json){
        global $looking_for_tag;
-       
+       global $config;
         if (is_array($json)&&(isset($json['tags'][0]))){
 
             if ((array_key_exists('sign', $json))){
