@@ -551,22 +551,16 @@ private function need_update($data, $category){
 
 
 public function download_images($permlink, $image_link){
-   try{
-
-            $image = new SimpleImage();
-            $filename = basename($image_link); 
-            $path = '../storage/web/thumbs/' . $permlink . '-' . $filename;
-
-            file_put_contents($path, file_get_contents($image_link));
-
-            $image->load('../storage/web/thumbs/' . $permlink . '-' . $filename);
-            $image->resizeToWidth(120);
-            $image->save('../storage/web/thumbs/' . $permlink . '-' . $filename);
-
-        } catch (Exception $e) {
-          
+    global $config;
+        
+                $arr = array ('author' => $author, 'permlink' => $permlink, 'link' => $image_link);
+                $arr = json_encode($arr);
+                $f = fopen($config['base_path'] . $config['blockchain']['name'] . '.txt', "a");
+                fwrite($f, $arr . " \n");
+                fclose($f); 
         }
-    }
+
+    
     
 static function mc_decrypt($decrypt){
     global $config;
