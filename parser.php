@@ -31,7 +31,7 @@ public function init(){
     global $looking_for_tag;
     global $db;    
 
-    $looking_for_tag= "ru--golos";    
+    $looking_for_tag= $config['search_tag'];
 
     $db = new SafeMysql(array('user' => $config['dbuser'], 'pass' => $config['dbpassword'],'db' => $config['dbname'],'host' => $config['dbhost'], 'charset' => 'utf8mb4'));
 
