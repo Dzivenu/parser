@@ -386,13 +386,7 @@ public function init(){
        global $looking_for_tag;
        global $config;
         if (is_array($json)&&(isset($json['tags'][0]))){
-
-            if ((array_key_exists('sign', $json))){
-               ($config['check_sign'] == true) ? $sign = $this->mc_decrypt($json['sign']) : "";
-                if ((is_array($sign)&&(array_key_exists('sign_flag', $sign)&&($sign['sign_flag'] == true)))||($config['check_sign'] == false)){
-
-
-                    if (is_array($json['tags'])) {
+                if (is_array($json['tags'])) {
                         if (array_key_exists('0', $json['tags'])){
                             if ($json['tags'][0] == $looking_for_tag) { //CHANGE TO == !!!! THAT MEAN WE LOOKING FOR ONE TAG. For test mode it is !=
 
@@ -412,13 +406,7 @@ public function init(){
                     } else {
                         return "tags is not array";
                     }
-                }   else {
-                return "SIGN check error";
-                }
                 
-            }   else {
-                return "SIGN check error";
-            }
         } else{
                return "tags not setted";
         }
