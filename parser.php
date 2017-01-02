@@ -39,7 +39,7 @@ public function init(){
     $num_in_sql = $this->get_num_current_block_from_sql();
     $num_in_blockchain = $this -> get_num_current_block();
    
-               for ($num_in_sql; $num_in_sql<$num_in_blockchain; $num_in_sql++){
+               for ($num_in_sql; $num_in_sql<=$num_in_blockchain; $num_in_sql++){
                     $transactions = $this->get_content_from_block($num_in_sql);
                     if (empty($transactions)){
                         $db->query("UPDATE current_blocks SET id= " . $num_in_sql . " WHERE blockchain = '" . $config['blockchain']['name'] . "'");
@@ -47,7 +47,7 @@ public function init(){
              
                         continue;
                   }
-             if ( $num_in_sql < $num_in_blockchain - 1 ){
+             if ( $num_in_sql < $num_in_blockchain){
                foreach ($transactions as $tr){
                  foreach ($tr['operations'] as $action){
 
