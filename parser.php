@@ -388,21 +388,10 @@ public function init(){
             if (is_array($json['tags'])) {
                 if (array_key_exists('0', $json['tags'])){
                     if ($json['tags'][0] == $looking_for_tag) { //CHANGE TO == !!!! THAT MEAN WE LOOKING FOR ONE TAG. For t$
-                       if (array_key_exists('app', $json)){
-                           if ($json['app'] == 'mapala'){
-                            return true; 
-                
-                           } else {
-                               
-                               return "This is not Mapala app";
-                           }
+                            
+                        return true; 
+                    
                        } else {
-                           
-                               return "This is not Mapala app";
-                           
-                       }
-                        
-                    } else {
                     
                         return "tags not contains keyword";
                     
