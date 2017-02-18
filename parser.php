@@ -213,7 +213,7 @@ public function init(){
         if (is_null($exist_art)) {
             
           $db->query("INSERT INTO art SET ?u", $data);
-          if(array_key_exists('0', $json['tags'])&&($json['tags'][0] != $looking_for_tag)){
+          if(array_key_exists('0', $json['tags'])&&($json['tags'][0] == $looking_for_tag)){
               $this->update_category($data['country'], $data['city'], $data['category'], $data['sub_category']);
           }
               return ("article by " . $data['author'] . "category: " . $json['tags'][0] . ", permlink: " . $data['permlink'] . " ADDED");
@@ -395,7 +395,7 @@ public function init(){
         if (is_array($json)&&(isset($json['tags'][0]))){
             if (is_array($json['tags'])) {
                 if (array_key_exists('0', $json['tags'])){
-                    if ($json['tags'][0] != $looking_for_tag) { //CHANGE TO == !!!! THAT MEAN WE LOOKING FOR ONE TAG. For t$
+                    if ($json['tags'][0] == $looking_for_tag) { //CHANGE TO == !!!! THAT MEAN WE LOOKING FOR ONE TAG. For t$
                             
                         return true; 
                     
