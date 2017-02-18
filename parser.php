@@ -54,14 +54,20 @@ public function init(){
                     if ($action[0] == "vote") { 
                         $answer_upvote = $this->add_vote_to_sql($action[1]['permlink'], $action[1]['author']);
                         $answer_voters = $this->update_voters_in_sql($action[1]['permlink'], $action[1]['voter']);
-                        echo ("block #" . $num_in_blockchain . ", action: VOTE" .  $answer_upvote ." \n"); 
+                        //TRAIL HERE
+                        if ($action[1]['voter'] == 'dark.sun'){
+                            $this->add_vote_to_trail($action[1]['voter'], $action[1]['author'], $action[1]['permlink']);
+             
+                        }
+                        
+                        echo ("block #" . $num_in_sql . ", action: VOTE" .  $answer_upvote ." \n"); 
                     }
 
 
                     else if ($action[0]== "account_create"){
 
                        $answer = $this->add_account_to_sql($action[1]);
-                       echo ("block #" . $num_in_blockchain . ", action: NEW ACCOUNT, username= " .  $answer ." \n"); 
+                       echo ("block #" . $num_in_sql . ", action: NEW ACCOUNT, username= " .  $answer ." \n"); 
 
                    }
 
@@ -80,11 +86,11 @@ public function init(){
                                     }
                                     } else { //if not '' - that mean it is reply
                                     $answer = $this->add_replie_to_sql($action[1], $json);
-                                    echo "block #" . $num_in_blockchain . ', action: REPLY, ' . $answer . " \n";
+                                    echo "block #" . $num_in_sql . ', action: REPLY, ' . $answer . " \n";
 
                                 }
                             } else {
-                                echo "block #" . $num_in_blockchain . ", action: Art or Reply, permlink =" . $action[1]['permlink'] . ", " . $answer . " \n";
+                                echo "block #" . $num_in_sql . ", action: Art or Reply, permlink =" . $action[1]['permlink'] . ", " . $answer . " \n";
                             }
                         }
 
@@ -181,7 +187,7 @@ public function init(){
         $data['meta']=                $full_content['json_metadata'];
         $data['created_at']=          $full_content['created'];
         $data['updated_at']=          $full_content['last_update'];
-        $data['total_pending_payout_value']=  $full_content['total_pending_payout_value'];
+        $data['total_pending_payout_value'] =  $full_content['total_pending_payout_value'] + $full_content['total_payout_value'];
         $data['meta']=                $full_content['json_metadata'];
         $data['parent_permlink'] =    $full_content['parent_permlink'];
         $data['blockchain']=          $blockchain['name'];
@@ -207,7 +213,7 @@ public function init(){
         if (is_null($exist_art)) {
             
           $db->query("INSERT INTO art SET ?u", $data);
-          if(array_key_exists('0', $json['tags'])&&($json['tags'][0] == $looking_for_tag)){
+          if(array_key_exists('0', $json['tags'])&&($json['tags'][0] != $looking_for_tag)){
               $this->update_category($data['country'], $data['city'], $data['category'], $data['sub_category']);
           }
               return ("article by " . $data['author'] . "category: " . $json['tags'][0] . ", permlink: " . $data['permlink'] . " ADDED");
@@ -242,7 +248,7 @@ public function init(){
         $data['created_at']=          $full_content['created'];
         $data['updated_at']=          $full_content['last_update'];
         $data['title']=               $full_content['title'];
-        $data['total_pending_payout_value'] =  $full_content['total_pending_payout_value'];
+        $data['total_pending_payout_value'] =  $full_content['total_pending_payout_value'] + $full_content['total_payout_value'];
         $data['meta']=                $full_content['json_metadata'];
         $data['parent_permlink'] =    $full_content['parent_permlink'];
         $data['blockchain']=          $blockchain['name'];
@@ -364,9 +370,11 @@ public function init(){
         global $db;
         global $config;
         $table = $this->art_or_comment($permlink);
-
+      
             if ($table != 'NULL'){
                 $full_content = $this->get_full_content($author, $permlink, $config['blockchain']['node']);
+                $full_content['total_pending_payout_value'] =  $full_content['total_pending_payout_value'] + $full_content['total_payout_value'];
+     
                 $db->query("UPDATE ?n SET votes=votes+1, total_pending_payout_value=?s  WHERE permlink=?s", $table, $full_content['total_pending_payout_value'],$permlink);
            
                 return ", permlink = " . $permlink . ", author = " . $author;
@@ -387,7 +395,7 @@ public function init(){
         if (is_array($json)&&(isset($json['tags'][0]))){
             if (is_array($json['tags'])) {
                 if (array_key_exists('0', $json['tags'])){
-                    if ($json['tags'][0] == $looking_for_tag) { //CHANGE TO == !!!! THAT MEAN WE LOOKING FOR ONE TAG. For t$
+                    if ($json['tags'][0] != $looking_for_tag) { //CHANGE TO == !!!! THAT MEAN WE LOOKING FOR ONE TAG. For t$
                             
                         return true; 
                     
@@ -587,6 +595,15 @@ private function need_update($data, $category){
             return $decrypted;
         }
 
-
+        
+        
+     public function add_vote_to_trail($voter, $author, $permlink){
+        global $config;
+        global $db;
+        
+        $db->query("INSERT INTO need_vote SET author =?s, voter=?s, permlink=?s, blockchain=?s ", $author, $voter, $permlink, $config['blockchain']['name']);
+          
+         
+     }
 
 }
