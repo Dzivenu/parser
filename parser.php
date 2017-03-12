@@ -38,7 +38,8 @@ public function init(){
 
     $num_in_sql = $this->get_num_current_block_from_sql();
     $num_in_blockchain = $this -> get_num_current_block();
-   
+    echo $num_in_sql . ' \n';
+    echo $num_in_blockchain . ' \n';
                for ($num_in_sql; $num_in_sql<=$num_in_blockchain; $num_in_sql++){
                     $transactions = $this->get_content_from_block($num_in_sql);
                     if (empty($transactions)){
@@ -62,10 +63,11 @@ public function init(){
                         
                         echo ("block #" . $num_in_sql . ", action: VOTE" .  $answer_upvote ." \n"); 
                     }
+ 
+ 
 
-
-                    else if ($action[0]== "account_create"){
-
+                    if ($action[0]== "account_create"){
+                   
                        $answer = $this->add_account_to_sql($action[1]);
                        echo ("block #" . $num_in_sql . ", action: NEW ACCOUNT, username= " .  $answer ." \n"); 
 
@@ -213,7 +215,7 @@ public function init(){
         if (is_null($exist_art)) {
             
           $db->query("INSERT INTO art SET ?u", $data);
-          if(array_key_exists('0', $json['tags'])&&($json['tags'][0] == $looking_for_tag)){
+          if(array_key_exists('0', $json['tags'])&&($json['tags'][0] != $looking_for_tag)){
               $this->update_category($data['country'], $data['city'], $data['category'], $data['sub_category']);
           }
               return ("article by " . $data['author'] . "category: " . $json['tags'][0] . ", permlink: " . $data['permlink'] . " ADDED");
@@ -287,9 +289,12 @@ public function init(){
     
    private function add_account_to_sql($data){
         global $db;
-        $data_part['username'] = $data['new_account_name'];
-        $db->query("INSERT INTO users_raw SET ?u", $data_part);
         
+        $data_part['username'] = $data['new_account_name'];
+        $data_part['json_metadata'] = $data['json_metadata'];
+        
+        $db->query("INSERT INTO users_raw SET ?u", $data_part);
+
         return ($data['new_account_name']);
     }
     
@@ -395,7 +400,7 @@ public function init(){
         if (is_array($json)&&(isset($json['tags'][0]))){
             if (is_array($json['tags'])) {
                 if (array_key_exists('0', $json['tags'])){
-                    if ($json['tags'][0] == $looking_for_tag) { //CHANGE TO == !!!! THAT MEAN WE LOOKING FOR ONE TAG. For t$
+                    if ($json['tags'][0] != $looking_for_tag) { //CHANGE TO == !!!! THAT MEAN WE LOOKING FOR ONE TAG. For t$
                             
                         return true; 
                     
@@ -567,12 +572,13 @@ private function need_update($data, $category){
 
     public function download_images($permlink, $author, $image_link){
         global $config;
-        
-                $arr = array ('author' => $author, 'permlink' => $permlink, 'link' => $image_link);
-                $arr = json_encode($arr);
-                $f = fopen($config['base_path'] . $config['blockchain']['name'] . '.txt', "a");
-                fwrite($f, $arr . " \n");
-                fclose($f); 
+        global $db;
+                $db->query("INSERT INTO images SET author =?s, permlink=?s, downloaded=0, url=?s, blockchain=?s ", $author, $permlink, $image_link, $config['blockchain']['name']);
+             //   $arr = array ('author' => $author, 'permlink' => $permlink, 'link' => $image_link);
+             //   $arr = json_encode($arr);
+             //   $f = fopen($config['base_path'] . $config['blockchain']['name'] . '.txt', "a");
+             //   fwrite($f, $arr . " \n");
+             //   fclose($f); 
         }
 
         
