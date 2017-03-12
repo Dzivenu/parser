@@ -38,8 +38,8 @@ public function init(){
 
     $num_in_sql = $this->get_num_current_block_from_sql();
     $num_in_blockchain = $this -> get_num_current_block();
-    echo $num_in_sql . ' \n';
-    echo $num_in_blockchain . ' \n';
+   // echo $num_in_sql . ' \n';
+   // echo $num_in_blockchain . ' \n';
                for ($num_in_sql; $num_in_sql<=$num_in_blockchain; $num_in_sql++){
                     $transactions = $this->get_content_from_block($num_in_sql);
                     if (empty($transactions)){
